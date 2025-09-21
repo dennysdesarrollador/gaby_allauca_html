@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gaby SPA Completa</title>
+
+<!-- ======================= -->
+<!-- CSS GABY -->
+<!-- ======================= -->
+<style>
+#gaby { display:flex; flex-direction:column; justify-content:center; align-items:center; width:100%; height:100vh; background:#1a1a1a; color:#fff; font-family:'Great Vibes', cursive; }
+#gaby .loading-screen { display:flex; flex-direction:column; justify-content:center; align-items:center; width:100%; height:100%; }
+#gaby .loading-heart { font-size:4rem; color:#ff2d2d; margin-bottom:2rem; animation:heartbeat 1.5s ease-in-out infinite; }
+@keyframes heartbeat { 0%,100%{transform:scale(1);} 50%{transform:scale(1.2);} }
+#gaby .loading-bar-container { width:300px; height:8px; background-color: rgba(255,255,255,0.1); border-radius:4px; overflow:hidden; box-shadow:0 0 10px rgba(255,45,45,0.3); }
+#gaby .loading-bar { height:100%; width:0%; border-radius:4px; background:linear-gradient(90deg,#ff2d2d,#ff6666,#ff2d2d); box-shadow:0 0 20px rgba(255,45,45,0.6); transition:width 0.3s ease; }
+#gaby .loading-text { color:#fff; font-family:'Great Vibes', cursive; font-size:1.5rem; margin-top:1rem; text-shadow:0 0 10px rgba(255,45,45,0.5); }
+</style>
+
+<!-- ======================= -->
+<!-- CSS INDEX -->
+<!-- ======================= -->
+<style>
+#index *{margin:0;padding:0;box-sizing:border-box;}
+#index{width:100%;height:100vh;background:linear-gradient(135deg,#f5a9f2,#d2a6f7);display:flex;flex-direction:column;justify-content:flex-start;align-items:center;}
+#index .container{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;height:100vh;padding-top:50px;text-align:center;}
+#index .main-image{max-width:328px;max-height:428px;border-radius:20px;box-shadow:0 10px 25px rgba(200,100,255,0.5);border:3px solid #c085f7;}
+#index .frase-principal{margin:30px 0 20px 0;font-size:2rem;color:#9b59b6;text-shadow:0 0 10px #d2a6f7,0 0 20px #b19cd9;font-weight:bold;}
+#index .btn{padding:15px 35px;background:linear-gradient(45deg,#d2a6f7,#f5a9f2);color:white;font-weight:bold;text-decoration:none;border-radius:15px;box-shadow:0 5px 20px rgba(150,50,200,0.5);transition:0.3s;font-size:1.1rem;cursor:pointer;}
+#index .btn:hover{transform:scale(1.1);box-shadow:0 8px 30px rgba(200,100,255,0.7);}
+#index canvas{position:fixed;top:0;left:0;z-index:1;}
+</style>
+
+<!-- ======================= -->
+<!-- CSS SORPRESA + REGALO UNIFICADO -->
+<!-- ======================= -->
+<style>
+/* Fondo negro y estrellas */
+#sorpresa, #regalo {
+  display:none;
+  width:100%;
+  height:100vh;
+  background:black;
+  font-family:'Great Vibes',cursive;
+  color:#fff;
+  overflow:hidden;
+  position:relative;
+  z-index:0;
+}
+
+canvas#starsCanvas, canvas#bg {
+  position:fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  z-index:0;
+  display:block;
+}
+
+#sorpresa .content {
+  position:relative;
+  z-index:1;
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+  gap:50px;
+  padding:60px 40px 40px;
+}
+
+#sorpresa .content img {
+  max-width:220px;
+  margin-bottom:20px;
+  animation:float 3s ease-in-out infinite;
+}
+
+@keyframes float { 0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);} }
+
+.neon-text {
+  font-size:2rem;
+  line-height:1.5;
+  color:#fff;
+  text-shadow:0 0 5px #fff,0 0 10px #0ff,0 0 20px #0ff,0 0 40px #0ff,0 0 80px #0ff;
+  animation:flicker 2s infinite alternate;
+  margin-bottom:40px;
+}
+
+@keyframes flicker{0%{opacity:1;}50%{opacity:0.8;}100%{opacity:1;}}
+
+.btn {
+  background:transparent;
+  border:2px solid #0ff;
+  color:#0ff;
+  font-size:1.3rem;
+  padding:12px 25px;
+  border-radius:30px;
+  cursor:pointer;
+  transition:all 0.3s ease;
+  text-shadow:0 0 8px #0ff;
+  box-shadow:0 0 15px rgba(0,255,255,0.5);
+}
+
+.btn:hover{background:#0ff;color:black;text-shadow:none;box-shadow:0 0 25px #0ff,0 0 50px #0ff;}
+
+/* REGALO */
+body.regalo{overflow-y:auto;}
+.message{
+  position:relative;
+  z-index:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+  padding:40px 20px;
+  color:#fff;
+}
+
+.message h1{
+  font-size:2.8rem;
+  color:#ffd700;
+  text-shadow:0 0 8px #ffd700,0 0 15px #ffa500,0 0 25px #ffcc00;
+  animation:glow 2s infinite alternate;
+  margin-bottom:15px;
+}
+
+@keyframes glow{from{text-shadow:0 0 8px #ffd700,0 0 15px #ffa500;}to{text-shadow:0 0 20px #ffcc00,0 0 40px #ffa500,0 0 60px #ff8800;}}
+
+.message p{
+  max-width:700px;
+  font-size:1.5rem;
+  line-height:1.4;
+  margin-top:10px;
+  margin-bottom:5px;
+  color:#fff;
+  text-shadow:0 0 5px #fff,0 0 10px #f0f,0 0 20px #0ff;
+  animation:flicker2 3s infinite alternate;
+}
+
+@keyframes flicker2{0%{opacity:0.9;}50%{opacity:1;text-shadow:0 0 10px #ff69b4,0 0 20px #ff00ff;}100%{opacity:0.85;}}
+
+/* Girasoles */
+:root{--line-color:linear-gradient(to top,#82ff86 20%,#144425,#104e1c);--flower-center:radial-gradient(circle at center,#3d2003,#8b4513);--leaf-color:radial-gradient(circle at center,#82ff86,#104e1c);--petal-color:radial-gradient(circle at center,#ffbb00,#ff5e00);}
+.sunflowers-container{display:grid;grid-template-columns:repeat(auto-fit,minmax(80px,1fr));gap:2rem;width:auto;max-width:600px;place-items:center;margin-bottom:0;}
+.sunflower{display:flex;align-items:flex-end;justify-content:center;position:relative;width:100%;max-width:80px;aspect-ratio:1/2;}
+.flower_wrapper{position:relative;width:100%;height:100%;animation:moving-flower-sway 4s linear infinite,sunflower-glow 2s ease-in-out infinite;}
+.flower_stem{width:8%;height:55%;background-image:var(--line-color);border-radius:50%/5%;transform-origin:center bottom;position:absolute;bottom:0;left:50%;transform:translateX(-50%);}
+.flower_center{position:absolute;bottom:55%;left:50%;transform:translate(-50%,50%);width:20%;aspect-ratio:1;border-radius:50%;background:var(--flower-center);z-index:10;}
+.flower_petal{position:absolute;left:50%;bottom:55%;width:10%;height:25%;background:var(--petal-color);border-radius:50%/50%;transform-origin:center bottom;transform:translateX(-50%) rotate(var(--rotation)) scale(0);z-index:5;animation:draw-petal 0.8s forwards;}
+.flower_leaf{position:absolute;left:50%;bottom:15%;width:15%;height:20%;background:var(--leaf-color);border-radius:50%/25%;transform-origin:center bottom;transform:translateX(-50%) rotate(var(--rotation));z-index:3;}
+@keyframes moving-flower-sway{0%,100%{transform:rotate(5deg);}50%{transform:rotate(-5deg);}}
+@keyframes sunflower-glow{0%{filter:drop-shadow(0 0 10px rgba(255,223,0,0.9));}50%{filter:drop-shadow(0 0 20px rgba(255,223,0,1));}100%{filter:drop-shadow(0 0 10px rgba(255,223,0,0.9));}}
+@keyframes draw-petal{from{opacity:0;transform:translateX(-50%) rotate(var(--rotation)) scale(0);}to{opacity:1;transform:translateX(-50%) rotate(var(--rotation)) scale(1);}}
+</style>
+</head>
+<body>
+
+<!-- ======================= -->
+<!-- SECCIÓN GABY -->
+<!-- ======================= -->
+<section id="gaby">
+  <div class="loading-screen">
+    <div class="loading-heart">♥</div>
+    <div class="loading-bar-container">
+      <div class="loading-bar" id="loadingBar"></div>
+    </div>
+    <div class="loading-text">Cargando...</div>
+  </div>
+  <audio id="bg-audio" autoplay loop>
+    <source src="audio/Flores Amarillas.mp3" type="audio/mpeg">
+  </audio>
+</section>
+
+<!-- ======================= -->
+<!-- SECCIÓN INDEX -->
+<!-- ======================= -->
+<section id="index" style="display:none;">
+  <canvas id="corazones"></canvas>
+  <div class="container">
+    <img src="img/foto.jpg" alt="Gaby" class="main-image">
+    <h1 class="frase-principal">GABY LE TENGO UNA SORPRESA</h1>
+    <a href="#" class="btn" onclick="showSorpresa()">VER SORPRESA</a>
+  </div>
+</section>
+
+<!-- ======================= -->
+<!-- SECCIÓN SORPRESA -->
+<!-- ======================= -->
+<section id="sorpresa">
+  <canvas id="starsCanvas"></canvas>
+  <div class="content">
+    <div class="left">
+      <img src="img/box bunny.png" alt="Bugs Bunny">
+    </div>
+    <div class="right">
+      <div class="neon-text">
+        ¡Hey, pensaba que hoy iba a ser espectadora,<br>
+        eso jamás!<br>
+        El ingeniero tiene un regalo para usted.
+      </div>
+      <button class="btn" onclick="showRegalo()">Ver Regalo 🎁</button>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= -->
+<!-- SECCIÓN REGALO -->
+<!-- ======================= -->
+<section id="regalo" class="regalo">
+  <canvas id="bg"></canvas>
+  <div class="message">
+    <h1>🌻 FELIZ 21 DE SEPTIEMBRE 🌻</h1>
+    <div class="sunflowers-container"></div>
+    <p>Si el pasado fue mi error, mi presente es solamente suyo.</p>
+    <p>Sé que le perdí por mis errores, por eso hoy vuelvo con paciencia y con todo el amor que no supe darle.</p>
+  </div>
+</section>
+
+<!-- ======================= -->
+<!-- JS GABY + INDEX + SORPRESA + REGALO -->
+<!-- ======================= -->
+<script>
+(function(){
+  const gaby=document.querySelector('#gaby');
+  const index=document.querySelector('#index');
+  function simulateLoading(){
+    const bar=gaby.querySelector("#loadingBar");
+    let progress=0;
+    function update(){
+      progress+=Math.random()*15;
+      if(progress>100) progress=100;
+      bar.style.width=progress+"%";
+      if(progress<100) setTimeout(update,100+Math.random()*200);
+      else setTimeout(()=>{gaby.style.display='none'; index.style.display='flex';},500);
+    }
+    update();
+  }
+  window.addEventListener("load",simulateLoading);
+
+  // Corazones Index
+  const canvas=index.querySelector("#corazones");
+  const ctx=canvas.getContext("2d");
+  canvas.width=window.innerWidth; canvas.height=window.innerHeight;
+  window.addEventListener("resize",()=>{canvas.width=window.innerWidth; canvas.height=window.innerHeight;});
+  class Corazon{constructor(){this.x=Math.random()*canvas.width;this.y=Math.random()*canvas.height;this.size=Math.random()*20+10;this.speedY=Math.random()*1+0.5;this.speedX=(Math.random()-0.5)*1;this.color=`hsl(${Math.random()*360},70%,70%)`;this.angle=Math.random()*Math.PI*2;this.type=Math.floor(Math.random()*3);}
+    draw(){ctx.save();ctx.translate(this.x,this.y);ctx.rotate(Math.sin(this.angle));ctx.fillStyle=this.color;ctx.beginPath();switch(this.type){case 0:ctx.moveTo(0,0);ctx.bezierCurveTo(0,-this.size/2,-this.size/2,-this.size/2,-this.size/2,0);ctx.bezierCurveTo(-this.size/2,this.size/2,0,this.size/1.5,0,this.size);ctx.bezierCurveTo(0,this.size/1.5,this.size/2,this.size/2,this.size/2,0);ctx.bezierCurveTo(this.size/2,-this.size/2,0,-this.size/2,0,0);ctx.fill();break;case 1:ctx.arc(0,0,this.size/2,0,Math.PI*2);ctx.fill();break;case 2:ctx.moveTo(0,0);ctx.lineTo(-this.size/2,this.size);ctx.lineTo(this.size/2,this.size);ctx.closePath();ctx.fill();}ctx.restore();}
+    update(){this.y-=this.speedY;this.x+=this.speedX;this.angle+=0.02;if(this.y<-50)this.y=canvas.height+50;if(this.x<-50)this.x=canvas.width+50;if(this.x>canvas.width+50)this.x=-50;}}
+  const corazones=[];for(let i=0;i<50;i++)corazones.push(new Corazon());
+  function animate(){ctx.clearRect(0,0,canvas.width,canvas.height);corazones.forEach(c=>{c.update();c.draw();});requestAnimationFrame(animate);}animate();
+
+  window.showSorpresa=function(){index.style.display='none';document.querySelector('#sorpresa').style.display='flex';};
+})();
+</script>
+
+<!-- ======================= -->
+<!-- JS SORPRESA 2D -->
+<!-- ======================= -->
+<script>
+const canvas2d = document.getElementById("starsCanvas");
+const ctx2d = canvas2d.getContext("2d");
+function resizeCanvas2D(){ canvas2d.width = window.innerWidth; canvas2d.height = window.innerHeight; }
+window.addEventListener("resize", resizeCanvas2D);
+resizeCanvas2D();
+
+const stars2d = Array.from({length:150}, () => ({
+  x:Math.random()*canvas2d.width,
+  y:Math.random()*canvas2d.height,
+  radius:Math.random()*2,
+  speed:0.5 + Math.random()*1.5
+}));
+
+function animateStars2D(){
+  ctx2d.clearRect(0,0,canvas2d.width,canvas2d.height);
+  ctx2d.fillStyle="white";
+  stars2d.forEach(s=>{
+    ctx2d.beginPath();
+    ctx2d.arc(s.x,s.y,s.radius,0,Math.PI*2);
+    ctx2d.fill();
+    s.y += s.speed;
+    if(s.y>canvas2d.height){ s.y=0; s.x=Math.random()*canvas2d.width; }
+  });
+  requestAnimationFrame(animateStars2D);
+}
+animateStars2D();
+
+window.showRegalo=function(){
+  document.getElementById('sorpresa').style.display='none';
+  const regalo=document.getElementById('regalo');
+  regalo.style.display='block';
+  document.body.classList.add('regalo');
+  initSunflowers();
+};
+
+// Girassoles
+function initSunflowers(){
+  const container=document.querySelector(".sunflowers-container");
+  if(container.children.length>0) return; // evitar duplicar
+  for(let i=0;i<3;i++){
+    const sunflower=document.createElement("div");sunflower.classList.add("sunflower");
+    const wrapper=document.createElement("div");wrapper.classList.add("flower_wrapper");
+    const stem=document.createElement("div");stem.classList.add("flower_stem");wrapper.appendChild(stem);
+    const center=document.createElement("div");center.classList.add("flower_center");wrapper.appendChild(center);
+    for(let k=0;k<12;k++){const petal=document.createElement("div");petal.classList.add("flower_petal");petal.style.setProperty('--rotation',`${k*30}deg`);petal.style.animationDelay=`${0.1*k}s`;wrapper.appendChild(petal);}
+    for(let l=0;l<2;l++){const leaf=document.createElement("div");leaf.classList.add("flower_leaf");leaf.style.setProperty('--rotation',l===0?'45deg':'-45deg');wrapper.appendChild(leaf);}
+    sunflower.appendChild(wrapper);
+    container.appendChild(sunflower);
+  }
+}
+</script>
+
+<!-- ======================= -->
+<!-- THREE JS ESTRELLAS 3D -->
+<!-- ======================= -->
+<script type="module">
+import * as THREE from 'https://unpkg.com/three@0.166.0/build/three.module.js';
+const canvas3d = document.querySelector('#bg');
+const renderer = new THREE.WebGLRenderer({canvas:canvas3d,alpha:true,antialias:true});
+renderer.setSize(window.innerWidth,window.innerHeight);
+renderer.setPixelRatio(window.devicePixelRatio);
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75,window.innerWidth/window.innerHeight,0.1,1000);
+camera.position.z=5;
+scene.add(new THREE.AmbientLight(0xffffff,0.3));
+
+const starsCount=12000;
+const geometry=new THREE.BufferGeometry();
+const positions=new Float32Array(starsCount*3);
+const colors=new Float32Array(starsCount*3);
+const sizes=new Float32Array(starsCount);
+
+for(let i=0;i<starsCount;i++){
+  const angle=Math.random()*Math.PI*2;
+  const radius=Math.random()*30+20;
+  positions[i*3]=Math.cos(angle)*radius;
+  positions[i*3+1]=Math.sin(angle)*radius;
+  positions[i*3+2]=(Math.random()-0.5)*120-30;
+  const brightness=Math.random()*0.7+0.8;
+  colors[i*3]=colors[i*3+1]=colors[i*3+2]=brightness;
+  sizes[i]=Math.random()*0.3+0.1;
+}
+geometry.setAttribute('position',new THREE.BufferAttribute(positions,3));
+geometry.setAttribute('color',new THREE.BufferAttribute(colors,3));
+geometry.setAttribute('size',new THREE.BufferAttribute(sizes,1));
+
+const material=new THREE.PointsMaterial({size: window.innerWidth<=768?0.2:0.25,vertexColors:true,blending: THREE.AdditiveBlending,transparent:true,sizeAttenuation:true});
+const stars=new THREE.Points(geometry,material);
+scene.add(stars);
+
+function animate3D(){
+  requestAnimationFrame(animate3D);
+  const pos = stars.geometry.attributes.position.array;
+  for(let i=0;i<starsCount;i++){
+    pos[i*3+2] += 0.2;
+    if(pos[i*3+2]>15) pos[i*3+2]=-60-Math.random()*30;
+  }
+  stars.geometry.attributes.position.needsUpdate = true;
+  stars.rotation.z += 0.0005;
+  renderer.render(scene,camera);
+}
+window.addEventListener('resize',()=>{
+  renderer.setSize(window.innerWidth,window.innerHeight);
+  camera.aspect=window.innerWidth/window.innerHeight;
+  camera.updateProjectionMatrix();
+});
+animate3D();
+</script>
+
+</body>
+</html>
